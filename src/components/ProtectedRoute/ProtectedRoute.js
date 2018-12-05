@@ -1,23 +1,25 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
-const ProtectedRoute = () => {
-  let authenticated;
-  if (localStorage.getItem('loggedIn') === 'true') {
-    authenticated = true;
-  } else {
-    authenticated = false;
+class ProtectedRoute extends Component {
+  render() {
+    let authenticated;
+    if (localStorage.getItem('loggedIn') === 'true') {
+      authenticated = true;
+    } else {
+      authenticated = false;
+    }
+    const { component: Component, ...props } = this.props;
+
+    return (
+      <Route
+        {...props}
+        render={props =>
+          authenticated ? <Component {...props} /> : <Redirect to="/" />
+        }
+      />
+    );
   }
-  const { component: Component, ...props } = this.props;
-
-  return (
-    <Route
-      {...props}
-      render={props =>
-        authenticated ? <Component {...props} /> : <Redirect to="/" />
-      }
-    />
-  );
-};
+}
 
 export default ProtectedRoute;
